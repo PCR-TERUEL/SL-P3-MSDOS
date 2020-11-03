@@ -29,10 +29,12 @@ public class DOSWrapper {
         robot = new Robot();
         initializeOCR();
 
-        getGames();
-
+        //getGames();
         //insertData("Prueba", "SIMULADOR", "1");
         //ordenar("NOMBRE");
+        searchGames(null,"PA");
+        nextEntrySearch();
+        editCurrentEntry("PRUEBA", "SIMULADOR", "A");
     }
 
     private void initializeOCR() {
@@ -52,24 +54,23 @@ public class DOSWrapper {
     }
 
     public void insertData(String name, String type, String cassette) {
-        robot.keyPress(KeyEvent.VK_1);
-        robot.keyRelease(KeyEvent.VK_1);
-        sendKeys(name, true);
-        sendKeys(type, true);
-        sendKeys(cassette, true);
+        sendKeys("1", false, false);
+        sendKeys(name, true, false);
+        sendKeys(type, true, false);
+        sendKeys(cassette, true, false);
         sendKeyEvent(KeyEvent.VK_ENTER);
         sendKeyEvent(KeyEvent.VK_ENTER);
     }
 
     public void ordenar(String orden) throws InterruptedException {
-        sendKeys("3", false);
-        sendKeys(String.valueOf(ORDER_TYPES.indexOf(orden) + 1),true);
+        sendKeys("3", false, false);
+        sendKeys(String.valueOf(ORDER_TYPES.indexOf(orden) + 1),true, false);
         Thread.sleep(ORDER_TIME);
         sendKeyEvent(KeyEvent.VK_ENTER);
     }
 
     public List<String> getDatabaseInfo() throws TesseractException {
-        sendKeys("4", false);
+        sendKeys("4", false, false);
         String infoDb = doScreensCapture();
 
         String nFiles = infoDb.split("\n")[3].split(" ")[1];
@@ -79,7 +80,7 @@ public class DOSWrapper {
     }
 
     public List<Game> getGames() throws TesseractException {
-        sendKeys("6", true);
+        sendKeys("6", true, false);
 
         List<Game> games = new ArrayList<>();
         String[] linesPage;
@@ -92,7 +93,7 @@ public class DOSWrapper {
             for (int i = lineaComienzo; i < linesPage.length - 1; i++) {
                 String[] gameFields = linesPage[i].split(" ");
                 if(!gameFields[0].isBlank()) { // Última página, líneas blancas
-                    Game game = getGameInfo(gameFields);
+                    Game game = getGameInfoList(gameFields);
                     game.setId(indice);
                     games.add(game);
                     indice++;
@@ -109,7 +110,78 @@ public class DOSWrapper {
         return games;
     }
 
-    private Game getGameInfo(String[] gameFields) {
+    public Game searchGames(String index, String name) throws TesseractException, InterruptedException {
+        sendKeys("7", false, false);
+        if (index != null) {
+            sendKeys("S", true, true);
+            sendKeys(index, true, false);
+        } else {
+            sendKeys("N", true, true);
+            sendKeys(name, true, true);
+        }
+        Thread.sleep(1500);
+        return verifySearchResult();
+    }
+
+    public Game nextEntrySearch() throws TesseractException, InterruptedException {
+        sendKeys("N", true, true);
+        Thread.sleep(1000);
+        return verifySearchResult();
+    }
+
+    public void editCurrentEntry(String name, String type, String cassette) {
+        sendKeys("S", true, true);
+        sendKeys("S", true, true);
+        sendKeys(name, true, true);
+        sendKeys(type, true, true);
+        sendKeys(cassette, true, true);
+        sendKeyEvent(KeyEvent.VK_ENTER);
+        sendKeys("N", true, true);
+    }
+
+    private Game verifySearchResult() throws TesseractException, InterruptedException {
+        Game game = getGameSearch(doScreensCapture());
+        if (game == null) {
+            sendKeyEvent(KeyEvent.VK_ENTER);
+            sendKeys("N", true, true);
+            System.out.println("Not found");
+            return null;
+        } else {
+            return game;
+        }
+    }
+
+    private Game getGameSearch(String searchResult) throws TesseractException {
+        String[] lines = searchResult.split("\n");
+
+        if(lines.length > 4) {
+            return null;
+        }
+
+        String[] fields = lines[2].split(" ");
+
+        String cassette = fields[fields.length - 1].substring(6, fields[fields.length - 1].length());
+        String type;
+        String name;
+
+        switch (fields[fields.length - 2]) {
+            case "MESA":
+                type = "JUEGO DE MESA";
+                name = String.join(" ", Arrays.copyOfRange(fields, 2, fields.length - 4));
+                break;
+            case "DEPORTIVO":
+                type = "S. DEPORTIVO";
+                name = String.join(" ", Arrays.copyOfRange(fields, 1, fields.length - 3));
+                break;
+            default:
+                type = calssifyType(fields[fields.length - 2]);
+                name = String.join(" ", Arrays.copyOfRange(fields, 1, fields.length - 2));
+        }
+
+        return new Game(name, type, cassette);
+    }
+
+    private Game getGameInfoList(String[] gameFields) {
 
         String cassette = gameFields[gameFields.length - 2];
         String type = "";
@@ -136,7 +208,7 @@ public class DOSWrapper {
     private String calssifyType(String type) {
         switch (type) {
             case "OTIEIDAD": return "UTILIDAD";
-            case "SIMIEADOR": return "SIMULADOR";
+            case "SIMIEADOR": case "SIMJLADOR": return "SIMULADOR";
             case "CONVERSACIONAE": return "CONVERSACIONAL";
             case "ESTRATECIA": return "ESTRATECIA";
             default: return type;
@@ -148,20 +220,26 @@ public class DOSWrapper {
         return ocr.doOCR(capture);
     }
 
-    private void sendKeys(String keys, boolean enter) {
+    private void sendKeys(String keys, boolean enter, boolean mayus) {
+        if (mayus) {
+            robot.keyPress(KeyEvent.VK_SHIFT);
+        }
         for (char c : keys.toCharArray()) {
             int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
             if (KeyEvent.CHAR_UNDEFINED == keyCode) {
                 throw new RuntimeException("Key code not found for character " + c);
             }
-            robot.keyPress(keyCode);
-            robot.delay(ROBOT_DELAY);
-            robot.keyRelease(keyCode);
-            robot.delay(ROBOT_DELAY);
+            sendKeyEvent(keyCode);
         }
+
+        if (mayus) {
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+        }
+
         if (enter) {
             sendKeyEvent(KeyEvent.VK_ENTER);
         }
+
     }
 
     private void sendKeyEvent(int keyEvent) {
