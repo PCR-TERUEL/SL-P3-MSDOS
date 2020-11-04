@@ -14,14 +14,15 @@ import java.io.IOException;
 
 
 public class DOSWrapper {
-    private final Robot robot;
-    private Tesseract1 ocr;
+    private static Robot robot;
+    private static Tesseract1 ocr;
     private static final List<String> dataTypes = List.of("UTILIDAD", "ARCADE", "CONVERSACIONAL", "VIDEOAVENTRA",
                                                           "SIMULADOR", "JUEGO DE MESA", "S. DEPORTIVO", "ESTRATEGIA");
     private static final List<String> ORDER_TYPES = List.of("NOMBRE", "TIPO", "CINTA", "ANTIGUEDAD", "-------");
-    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd Database-MSDOS & start /max database.bat";
+    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd C:\\Users\\danie\\IdeaProjects\\SL-P3-MSDOS-WEB\\Database-MSDOS & start /max database.bat";
     private static final int DOSBOX_EXEC_TIME = 5000;
     private static final int ORDER_TIME = 30000;
+    private static final int SEARCH_TIME = 1500;
     private static final int ROBOT_DELAY = 100;
 
     public DOSWrapper() throws IOException, InterruptedException, AWTException, TesseractException {
@@ -32,9 +33,9 @@ public class DOSWrapper {
         //getGames();
         //insertData("Prueba", "SIMULADOR", "1");
         //ordenar("NOMBRE");
-        searchGames(null,"PA");
-        nextEntrySearch();
-        editCurrentEntry("PRUEBA", "SIMULADOR", "A");
+        //searchGames(null,"PA");
+        //nextEntrySearch();
+        //editCurrentEntry("PRUEBA", "SIMULADOR", "A");
     }
 
     private void initializeOCR() {
@@ -53,7 +54,7 @@ public class DOSWrapper {
         new DOSWrapper();
     }
 
-    public void insertData(String name, String type, String cassette) {
+    public static void insertData(String name, String type, String cassette) {
         sendKeys("1", false, false);
         sendKeys(name, true, false);
         sendKeys(type, true, false);
@@ -62,7 +63,7 @@ public class DOSWrapper {
         sendKeyEvent(KeyEvent.VK_ENTER);
     }
 
-    public void ordenar(String orden) throws InterruptedException {
+    public static void order(String orden) throws InterruptedException {
         sendKeys("3", false, false);
         sendKeys(String.valueOf(ORDER_TYPES.indexOf(orden) + 1),true, false);
         Thread.sleep(ORDER_TIME);
@@ -110,7 +111,7 @@ public class DOSWrapper {
         return games;
     }
 
-    public Game searchGames(String index, String name) throws TesseractException, InterruptedException {
+    public static Game searchGames(String index, String name) throws TesseractException, InterruptedException {
         sendKeys("7", false, false);
         if (index != null) {
             sendKeys("S", true, true);
@@ -119,17 +120,17 @@ public class DOSWrapper {
             sendKeys("N", true, true);
             sendKeys(name, true, true);
         }
-        Thread.sleep(1500);
+        Thread.sleep(SEARCH_TIME);
         return verifySearchResult();
     }
 
-    public Game nextEntrySearch() throws TesseractException, InterruptedException {
+    public static Game nextEntrySearch() throws TesseractException, InterruptedException {
         sendKeys("N", true, true);
-        Thread.sleep(1000);
+        Thread.sleep(SEARCH_TIME);
         return verifySearchResult();
     }
 
-    public void editCurrentEntry(String name, String type, String cassette) {
+    public static void editCurrentEntry(String name, String type, String cassette) {
         sendKeys("S", true, true);
         sendKeys("S", true, true);
         sendKeys(name, true, true);
@@ -139,7 +140,7 @@ public class DOSWrapper {
         sendKeys("N", true, true);
     }
 
-    private Game verifySearchResult() throws TesseractException, InterruptedException {
+    private static Game verifySearchResult() throws TesseractException, InterruptedException {
         Game game = getGameSearch(doScreensCapture());
         if (game == null) {
             sendKeyEvent(KeyEvent.VK_ENTER);
@@ -151,7 +152,7 @@ public class DOSWrapper {
         }
     }
 
-    private Game getGameSearch(String searchResult) throws TesseractException {
+    private static Game getGameSearch(String searchResult) throws TesseractException {
         String[] lines = searchResult.split("\n");
 
         if(lines.length > 4) {
@@ -205,7 +206,7 @@ public class DOSWrapper {
         return new Game(name, type, cassette);
     }
 
-    private String calssifyType(String type) {
+    private static String calssifyType(String type) {
         switch (type) {
             case "OTIEIDAD": return "UTILIDAD";
             case "SIMIEADOR": case "SIMJLADOR": return "SIMULADOR";
@@ -215,12 +216,12 @@ public class DOSWrapper {
         }
     }
 
-    private String doScreensCapture() throws TesseractException {
+    private static String doScreensCapture() throws TesseractException {
         BufferedImage capture = robot.createScreenCapture(new Rectangle(0, 0, 1340, 700));
         return ocr.doOCR(capture);
     }
 
-    private void sendKeys(String keys, boolean enter, boolean mayus) {
+    private static void sendKeys(String keys, boolean enter, boolean mayus) {
         if (mayus) {
             robot.keyPress(KeyEvent.VK_SHIFT);
         }
@@ -242,11 +243,11 @@ public class DOSWrapper {
 
     }
 
-    private void sendKeyEvent(int keyEvent) {
+    private static void sendKeyEvent(int keyEvent) {
         robot.keyPress(keyEvent);
-        robot.delay(100);
+        robot.delay(ROBOT_DELAY);
         robot.keyRelease(keyEvent);
-        robot.delay(100);
+        robot.delay(ROBOT_DELAY);
     }
 
 

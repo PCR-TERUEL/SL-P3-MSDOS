@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.JsonObject;
+
 public class Game {
     private int id;
     private String name;
@@ -42,6 +44,15 @@ public class Game {
 
     public String getCassette() {
         return cassette;
+    }
+
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", id);
+        json.addProperty("name", name);
+        json.addProperty("type", type);
+        json.addProperty("cassette", cassette);
+        return json;
     }
 
 

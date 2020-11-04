@@ -629,7 +629,7 @@
   - wildcmp updated to be case insensitive
   - added fcb:open,close,findfirst, findnext.
   - fixed rename in drive_local
-  - added new features to the debugger: breakpoint support / data view / command line
+  - added new features to the debugger: breakpoint support / data dao / command line
   - partial support of list of lists (dos info block)
   - full emm 3.2 support  
   - partial emm 4.0 support
