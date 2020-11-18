@@ -7,12 +7,13 @@ public class Game {
     private String name;
     private String type;
     private String cassette;
-    private int registro;
+    private int register;
 
     public Game(String name, String type, String cassette, int registro) {
         this.name = name;
         this.type = type;
         this.cassette = cassette;
+        this.register = register;
     }
 
     public void setId(int id) {
@@ -57,12 +58,12 @@ public class Game {
     }
 
 
-    public int getRegistro() {
-        return registro;
+    public int getRegister() {
+        return register;
     }
 
-    public void setRegistro(int registro) {
-        this.registro = registro;
+    public void setRegister(int register) {
+        this.register = register;
     }
 }
 
