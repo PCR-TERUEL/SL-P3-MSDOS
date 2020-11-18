@@ -7,8 +7,9 @@ public class Game {
     private String name;
     private String type;
     private String cassette;
+    private int registro;
 
-    public Game(String name, String type, String cassette) {
+    public Game(String name, String type, String cassette, int registro) {
         this.name = name;
         this.type = type;
         this.cassette = cassette;
@@ -56,5 +57,12 @@ public class Game {
     }
 
 
+    public int getRegistro() {
+        return registro;
+    }
+
+    public void setRegistro(int registro) {
+        this.registro = registro;
+    }
 }
 

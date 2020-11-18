@@ -29,7 +29,22 @@ public class DOSWrapper {
         launchDOSBox();
         robot = new Robot();
         initializeOCR();
+/*
+        //List<String> trainers = List.of("spa-danimartin", "spa-danimejora", "spa-martinmejora", "spa-solodani", "spa-solomartin", "spa-solomejora", "spa-total");
+        List<String> trainers = List.of("spa");
 
+        for (String trainer : trainers) {
+            System.out.println("--- " + trainer + " ----");
+            ocr.setLanguage(trainer);
+            System.out.println(doScreensCapture());
+            sendKeys("6", true, false);
+            Thread.sleep(500);
+            System.out.println(doScreensCapture());
+            sendKeys("u", false, false);
+            Thread.sleep(500);
+        }
+*/
+        //getGames();
         //getGames();
         //insertData("Prueba", "SIMULADOR", "1");
         //ordenar("NOMBRE");
@@ -41,6 +56,8 @@ public class DOSWrapper {
     private void initializeOCR() {
         ocr = new Tesseract1();
         ocr.setLanguage("spa");
+
+
     }
 
     private void launchDOSBox() throws IOException, InterruptedException {
@@ -89,7 +106,7 @@ public class DOSWrapper {
         int lineaComienzo = 4;
         String page = doScreensCapture();
         linesPage = page.split("\n");
-
+        int k = 0;
         do {
             for (int i = lineaComienzo; i < linesPage.length - 1; i++) {
                 String[] gameFields = linesPage[i].split(" ");
@@ -105,8 +122,9 @@ public class DOSWrapper {
             lineaComienzo = 5; // Primera página comenzamos en línea 4, el resto en línea 5
             page = doScreensCapture();
             linesPage = page.split("\n");
-
-        } while (!linesPage[2].trim().equals("M E M U"));
+            k++;
+        } while (k < 2);
+    // while (!linesPage[2].trim().equals("M E M U"));
 
         return games;
     }
@@ -160,7 +178,7 @@ public class DOSWrapper {
         }
 
         String[] fields = lines[2].split(" ");
-
+        int register = Integer.parseInt(fields[fields.length - 1]);
         String cassette = fields[fields.length - 1].substring(6, fields[fields.length - 1].length());
         String type;
         String name;
@@ -179,7 +197,7 @@ public class DOSWrapper {
                 name = String.join(" ", Arrays.copyOfRange(fields, 1, fields.length - 2));
         }
 
-        return new Game(name, type, cassette);
+        return new Game(name, type, cassette, register);
     }
 
     private Game getGameInfoList(String[] gameFields) {
@@ -187,6 +205,7 @@ public class DOSWrapper {
         String cassette = gameFields[gameFields.length - 2];
         String type = "";
         String name = "";
+        int register = Integer.parseInt(gameFields[gameFields.length - 1]);
 
         switch (gameFields[gameFields.length - 3]) {
             case "NESA":
@@ -203,7 +222,7 @@ public class DOSWrapper {
         }
 
         System.out.println("Name: " + name + " Type: " + type + " Cassette: " + cassette);
-        return new Game(name, type, cassette);
+        return new Game(name, type, cassette, register);
     }
 
     private static String calssifyType(String type) {
@@ -217,7 +236,7 @@ public class DOSWrapper {
     }
 
     private static String doScreensCapture() throws TesseractException {
-        BufferedImage capture = robot.createScreenCapture(new Rectangle(0, 0, 1340, 700));
+        BufferedImage capture = robot.createScreenCapture(new Rectangle(0, 0, 1366, 728));
         return ocr.doOCR(capture);
     }
 
