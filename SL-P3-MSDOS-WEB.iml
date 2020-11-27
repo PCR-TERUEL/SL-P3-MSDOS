@@ -20,9 +20,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 5.0.1" level="application_server_libraries" />
-    <orderEntry type="library" name="com.sun.jna:jna:3.0.9" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
-    <orderEntry type="library" name="net.sourceforge.tess4j:tess4j:4.5.31" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.8.6" level="project" />
+    <orderEntry type="library" name="net.sourceforge.tess4j:tess4j:4.5.4" level="project" />
+    <orderEntry type="library" name="jstl:jstl:1.2" level="project" />
   </component>
 </module>

@@ -9,7 +9,7 @@ public class Game {
     private String cassette;
     private int register;
 
-    public Game(String name, String type, String cassette, int registro) {
+    public Game(String name, String type, String cassette, int register) {
         this.name = name;
         this.type = type;
         this.cassette = cassette;
@@ -54,6 +54,7 @@ public class Game {
         json.addProperty("name", name);
         json.addProperty("type", type);
         json.addProperty("cassette", cassette);
+        json.addProperty("register", register);
         return json;
     }
 

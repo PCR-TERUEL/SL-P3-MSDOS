@@ -14,7 +14,7 @@ public class NextEntrySearch extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         try {
 
-            Game game = DOSWrapper.nextEntrySearch();
+            Game game = null;
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");

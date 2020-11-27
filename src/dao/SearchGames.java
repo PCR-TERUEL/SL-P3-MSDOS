@@ -16,7 +16,8 @@ public class SearchGames extends HttpServlet {
             String id = request.getParameter("id");
             String name = request.getParameter("name");
 
-            Game game = DOSWrapper.searchGames(id, name);
+            //Game game = DOSWrapper.searchGames(id, name);
+            Game game = new Game(null, null, null, 1);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
