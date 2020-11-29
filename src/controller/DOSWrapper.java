@@ -19,7 +19,7 @@ public class DOSWrapper {
     private static final List<String> dataTypes = List.of("UTILIDAD", "ARCADE", "CONVERSACIONAL", "VIDEOAVENTRA",
                                                           "SIMULADOR", "JUEGO DE MESA", "S. DEPORTIVO", "ESTRATEGIA");
     private static final List<String> ORDER_TYPES = List.of("NOMBRE", "TIPO", "CINTA", "ANTIGUEDAD", "-------");
-    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd C:\\Users\\danie\\IdeaProjects\\SL-P3-MSDOS-WEB\\Database-MSDOS & start /max database.bat";
+    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd C:\\TESTS\\Database-MSDOS & start /max database.bat";
     private static final int DOSBOX_EXEC_TIME = 5000;
     private static final int ORDER_TIME = 30000;
     private static final int SEARCH_TIME = 1500;
@@ -29,25 +29,7 @@ public class DOSWrapper {
         launchDOSBox();
         robot = new Robot();
         initializeOCR();
-        boolean quiereEntrenarMartin = false;
 
-        if (quiereEntrenarMartin) {
-            martinQuiereEntrenarMierda();
-        }
-
-
-        List<Game> games = searchByName("II");
-        for (Game game : games) {
-            System.out.println(game.toJson());
-        }
-        //System.out.println(getFilesNumber());
-
-        //getGames();
-        //insertData("Prueba", "SIMULADOR", "1");
-        //ordenar("NOMBRE");
-        //searchGames(null,"PA");
-        //nextEntrySearch();
-        //editCurrentEntry("PRUEBA", "SIMULADOR", "A");
     }
 
     private void martinQuiereEntrenarMierda() throws TesseractException, InterruptedException {
@@ -217,6 +199,7 @@ public class DOSWrapper {
     private Game getGameInfo(String[] gameFields) {
 
         String cassette = gameFields[gameFields.length - 2];
+        System.out.println(gameFields[gameFields.length - 1]);
         int register = Integer.parseInt(gameFields[gameFields.length - 1]);
         List<String> nameType = getTypeNameGame(gameFields);
 
@@ -263,7 +246,9 @@ public class DOSWrapper {
             }
             if (mayus && Character.isDigit(c)) {
                 robot.keyPress(KeyEvent.VK_SHIFT);
-                sendKeyEvent(keyCode);
+            }
+            sendKeyEvent(keyCode);
+            if (mayus && Character.isDigit(c)) {
                 robot.keyRelease(KeyEvent.VK_SHIFT);
             }
 
