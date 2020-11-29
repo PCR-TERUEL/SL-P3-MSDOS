@@ -36,7 +36,7 @@
 </div>
 
 <div class="container">
-	<form class="example" action="search_games">
+	<form class="example" method="post" action="search_game ">
 		<div class="row">
 			<div class="row" style="width: 100%;">
 				<div class="col-md-4"></div>
@@ -65,7 +65,7 @@
 			</div>
 		</div>
 		<div class="row" >
-			<p style="margin-left: 40%">Hay ${total_num_games} resultados</p>
+			<p style="margin-left: 40%">Hay ${total_num_games} juegos</p>
 		</div>
 
 	</form>

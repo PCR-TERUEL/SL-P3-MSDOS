@@ -14,7 +14,6 @@ public class SearchGames extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
         try {
-            System.out.println("Hello world xd que sea todo una linea enrome de menos---------------------------------------------------");
             DOSWrapper dosWrapper = new DOSWrapper(false);
             List<Game> gameResult;
 
@@ -29,6 +28,7 @@ public class SearchGames extends HttpServlet {
             }
 
             request.setAttribute("games", gameResult);
+            request.setAttribute("total_num_games", dosWrapper.nGames);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             request.getRequestDispatcher("/index.jsp").forward(request, response);

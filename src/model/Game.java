@@ -79,5 +79,9 @@ public class Game {
     public boolean hasCassette(String cassette) {
         return this.cassette.contains(cassette);
     }
+
+    public boolean equals (Game game) {
+        return this.name.equals(game.name);
+    }
 }
 
