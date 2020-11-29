@@ -235,7 +235,7 @@ th, td {
   color: #fff;
   line-height: 1.4;
 
-  background-color: #6c7ae0;
+  background-color: #0474C9;
 }
 
 .table100.ver1 td {
@@ -254,11 +254,11 @@ th, td {
 .table100.ver1 {
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
-  -webkit-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
-  -o-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
-  -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0px 40px 0px #0474C9;
+  -moz-box-shadow: 0 0px 40px 0px  #0474C9;
+  -webkit-box-shadow: 0 0px 40px 0px  #0474C9;
+  -o-box-shadow: 0 0px 40px 0px  #0474C9;
+  -ms-box-shadow: 0 0px 40px 0px  #0474C9;
 }
 
 .table100.ver1 .ps__rail-y {
