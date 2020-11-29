@@ -19,17 +19,18 @@ public class DOSWrapper {
     private static final List<String> dataTypes = List.of("UTILIDAD", "ARCADE", "CONVERSACIONAL", "VIDEOAVENTRA",
                                                           "SIMULADOR", "JUEGO DE MESA", "S. DEPORTIVO", "ESTRATEGIA");
     private static final List<String> ORDER_TYPES = List.of("NOMBRE", "TIPO", "CINTA", "ANTIGUEDAD", "-------");
-    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd C:\\TESTS\\Database-MSDOS & start /max database.bat";
+    private static final String CMD_LAUNCH_DOSBOX = "cmd /c cd C:\\Users\\danie\\IdeaProjects\\SL-P3-MSDOS-WEB\\Database-MSDOS & start /max database.bat";
     private static final int DOSBOX_EXEC_TIME = 5000;
     private static final int ORDER_TIME = 30000;
     private static final int SEARCH_TIME = 1500;
     private static final int ROBOT_DELAY = 100;
 
-    public DOSWrapper() throws IOException, InterruptedException, AWTException, TesseractException {
-        launchDOSBox();
-        robot = new Robot();
-        initializeOCR();
-
+    public DOSWrapper(boolean isRunning) throws IOException, InterruptedException, AWTException, TesseractException {
+        if (!isRunning) {
+            launchDOSBox();
+            robot = new Robot();
+            initializeOCR();
+        }
     }
 
     private void martinQuiereEntrenarMierda() throws TesseractException, InterruptedException {
@@ -67,7 +68,7 @@ public class DOSWrapper {
 
 
     public static void main(String[] args) throws IOException, InterruptedException, AWTException, TesseractException {
-        new DOSWrapper();
+        new DOSWrapper(false);
     }
 
     public static void insertData(String name, String type, String cassette) {
@@ -102,9 +103,8 @@ public class DOSWrapper {
         List<Game> games = new ArrayList<>();
         int gameIndex = 1;
         String[] linesPage = doScreensCapture().split("\n");
-        int k = 0;
         do {
-            for (int i = 3; i < linesPage.length - 3; i++) {
+            for (int i = 4; i < linesPage.length - 3; i++) {
                 String[] gameFields = linesPage[i].split(" ");
                 if(!gameFields[0].isBlank()) { // Última página, líneas blancas
                     Game game = getGameInfo(gameFields);
@@ -116,14 +116,12 @@ public class DOSWrapper {
 
             sendKeyEvent(KeyEvent.VK_SPACE);
             linesPage = doScreensCapture().split("\n");
-            k++;
-        } while (k < 2);
-    // while (!linesPage[2].trim().equals("M E N U"));
+        } while (!linesPage[1].trim().equals("M E N U"));
         sendKeys("u", false, false);
         return games;
     }
 
-    public static List<Game> searchByName(String name) throws TesseractException, InterruptedException {
+    public List<Game> searchByName(String name) throws TesseractException, InterruptedException {
         List<Game> gamesResultSearch = new ArrayList<>();
 
         sendKeys("7", false, false);
@@ -131,16 +129,18 @@ public class DOSWrapper {
         sendKeys(name, true, false);
 
         Game game = verifySearchResult();
-
+        int id = 0;
         while(game != null) {
+            game.setId(id);
             gamesResultSearch.add(game);
             game = verifySearchResult();
+            id++;
         }
 
         return gamesResultSearch;
     }
 
-    public static Game searchByIndex(String index) throws TesseractException {
+    public Game searchByIndex(String index) throws TesseractException {
         sendKeys("7", false, false);
         sendKeys("S", true, true);
         sendKeys(index, true, false);
@@ -148,7 +148,19 @@ public class DOSWrapper {
         return getGameInfoSearch(searchResult);
     }
 
-    public static void editCurrentEntry(String name, String type, String cassette) {
+    public List<Game> searchByCassette(String cassette) throws TesseractException {
+        List<Game> games = getGames();
+        List<Game> gamesResult = new ArrayList<>();
+        for (Game game : games) {
+            if (game.hasCassette(cassette)) {
+                gamesResult.add(game);
+            }
+        }
+
+        return gamesResult;
+    }
+
+    public void editCurrentEntry(String name, String type, String cassette) {
         sendKeys("S", true, true);
         sendKeys("S", true, true);
         sendKeys(name, true, true);
@@ -158,24 +170,23 @@ public class DOSWrapper {
         sendKeys("N", true, true);
     }
 
-    private static Game verifySearchResult() throws TesseractException, InterruptedException {
+    private Game verifySearchResult() throws TesseractException {
         String[] lines = doScreensCapture().split("\n");
-        System.out.println(doScreensCapture());
-        if (lines.length > 6) {
+        for (String line : lines) System.out.println(line);
+        if (lines.length > 3) {
             sendKeyEvent(KeyEvent.VK_ENTER);
             sendKeys("N",true, true);
             return null;
         }  else {
             sendKeys("N",true, true);
-            return getGameInfoSearch(lines[2]);
+            return getGameInfoSearch(lines[1]);
         }
     }
 
-    private static Game getGameInfoSearch(String searchResult) throws TesseractException {
-
+    private Game getGameInfoSearch(String searchResult) throws TesseractException {
         String[] fields = searchResult.split(" ");
         int register = Integer.parseInt(fields[0]);
-        String cassette = fields[fields.length - 1].substring(6, fields[fields.length - 1].length());
+
         String type;
         String name;
         System.out.println("Field: " + fields[2]);
@@ -193,19 +204,44 @@ public class DOSWrapper {
                 name = String.join(" ", Arrays.copyOfRange(fields, 1, fields.length - 2)).substring(1).trim();
         }
 
+        List<String> cassette = getCassette(fields[fields.length - 1].substring(6), name);
         return new Game(name, type, cassette, register);
     }
 
     private Game getGameInfo(String[] gameFields) {
-
-        String cassette = gameFields[gameFields.length - 2];
-        System.out.println(gameFields[gameFields.length - 1]);
-        int register = Integer.parseInt(gameFields[gameFields.length - 1]);
+        for(String field : gameFields) System.out.println(field);
+        int register = Integer.parseInt(patchRegisterNumber(gameFields[gameFields.length - 1]));
         List<String> nameType = getTypeNameGame(gameFields);
+        List<String> cassette = getCassette(gameFields[gameFields.length - 2], nameType.get(1));
 
         Game game = new Game(nameType.get(0), nameType.get(1), cassette, register);
         game.setId(register);
         return game;
+    }
+
+    private String patchRegisterNumber(String register) {
+        if (register.equals("6EE")) {
+            return "600";
+        }
+        return register;
+    }
+    private List<String> getCassette(String entireCasetteField, String gameName) {
+        List<String> cassette = new ArrayList<>();
+        if (entireCasetteField.length() > 2) {
+            if (gameName.equals("BEACH HEAD II")) {
+                cassette.add("-31");
+            } else if (gameName.equals("BUBBLER")) {
+                cassette.add("13");
+                cassette.add("26");
+            } else {
+                cassette.add(String.valueOf(entireCasetteField.charAt(0)));
+                cassette.add(entireCasetteField.substring(2));
+            }
+
+        } else {
+            cassette.add(entireCasetteField);
+        }
+        return cassette;
     }
 
     // Type = list[0], Name = list[1]
@@ -244,25 +280,24 @@ public class DOSWrapper {
             if (KeyEvent.CHAR_UNDEFINED == keyCode) {
                 throw new RuntimeException("Key code not found for character " + c);
             }
-            if (mayus && Character.isDigit(c)) {
+            if (!Character.isDigit(c)) {
                 robot.keyPress(KeyEvent.VK_SHIFT);
+                robot.delay(ROBOT_DELAY);
             }
             sendKeyEvent(keyCode);
-            if (mayus && Character.isDigit(c)) {
+            if (!Character.isDigit(c)) {
                 robot.keyRelease(KeyEvent.VK_SHIFT);
             }
 
         }
 
         if (mayus) {
-
             robot.keyRelease(KeyEvent.VK_SHIFT);
         }
 
         if (enter) {
             sendKeyEvent(KeyEvent.VK_ENTER);
         }
-
     }
 
     private static void sendKeyEvent(int keyEvent) {
@@ -271,6 +306,4 @@ public class DOSWrapper {
         robot.keyRelease(keyEvent);
         robot.delay(ROBOT_DELAY);
     }
-
-
 }

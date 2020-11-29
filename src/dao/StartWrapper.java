@@ -15,7 +15,7 @@ public class StartWrapper extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         try {
-            new DOSWrapper();
+            //new DOSWrapper();
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");

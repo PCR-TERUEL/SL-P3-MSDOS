@@ -10,9 +10,17 @@
         <servlet-name>GetAllGames</servlet-name>
         <servlet-class>dao.GetAllGames</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>GetAllGames</servlet-name>
         <url-pattern>/get_all_games</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SearchGame</servlet-name>
+        <servlet-class>dao.SearchGames</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SearchGame</servlet-name>
+        <url-pattern>/search_game</url-pattern>
     </servlet-mapping>
 </web-app>
