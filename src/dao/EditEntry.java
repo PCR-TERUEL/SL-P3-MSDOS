@@ -14,7 +14,7 @@ public class EditEntry extends javax.servlet.http.HttpServlet {
             String type = request.getParameter("type");
             String cassette = request.getParameter("cassette");
 
-            DOSWrapper.editCurrentEntry(name, type, cassette);
+            //DOSWrapper.editCurrentEntry(name, type, cassette);
 
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("result", "ok");

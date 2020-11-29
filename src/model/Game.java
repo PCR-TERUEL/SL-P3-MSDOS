@@ -2,14 +2,16 @@ package model;
 
 import com.google.gson.JsonObject;
 
+import java.util.List;
+
 public class Game {
     private int id;
     private String name;
     private String type;
-    private String cassette;
+    private List<String> cassette;
     private int register;
 
-    public Game(String name, String type, String cassette, int register) {
+    public Game(String name, String type, List<String> cassette, int register) {
         this.name = name;
         this.type = type;
         this.cassette = cassette;
@@ -28,7 +30,7 @@ public class Game {
         this.type = type;
     }
 
-    public void setCassette(String cassette) {
+    public void setCassette(List<String> cassette) {
         this.cassette = cassette;
     }
 
@@ -44,7 +46,7 @@ public class Game {
         return type;
     }
 
-    public String getCassette() {
+    public List<String> getCassette() {
         return cassette;
     }
 
@@ -53,18 +55,29 @@ public class Game {
         json.addProperty("id", id);
         json.addProperty("name", name);
         json.addProperty("type", type);
-        json.addProperty("cassette", cassette);
+        json.addProperty("cassette", cassetteToJson());
         json.addProperty("register", register);
         return json;
+    }
+
+    private String cassetteToJson() {
+        String result = cassette.get(0);
+        for (int i = 1; i < cassette.size(); i++) {
+            result += "-" + cassette.get(i);
+        }
+        return result;
     }
 
 
     public int getRegister() {
         return register;
     }
-
     public void setRegister(int register) {
         this.register = register;
+    }
+
+    public boolean hasCassette(String cassette) {
+        return this.cassette.contains(cassette);
     }
 }
 

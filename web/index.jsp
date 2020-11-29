@@ -35,7 +35,7 @@
 </ul>
 </div>
 
-<form class="example" action="action_page.php">
+<form class="example" method="post" action="search_game">
 	<div class="row">
 		<div class="col-md-4">
 			<input type="text" placeholder="Search.." name="search">
@@ -47,12 +47,12 @@
 
     <div class="row">
         <div class="col-md-4 form-inline">
-            <input type="radio" id="name" name="search-selector" value="name">Nombre<br>
+            <input type="radio" id="name" name="searchSelector" value="name">Nombre<br>
 
         </div>
 
         <div class="col-md-5 form-inline">
-            <input type="radio" id="cassette" name="search-selector" value="cassette">Cinta<br>
+            <input type="radio" id="cassette" name="searchSelector" value="cassette">Cinta<br>
         </div>
     </div>
 

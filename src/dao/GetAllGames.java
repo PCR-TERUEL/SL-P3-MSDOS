@@ -22,10 +22,11 @@ public class GetAllGames extends javax.servlet.http.HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
 
-            DOSWrapper dosWrapper = new DOSWrapper();
+            DOSWrapper dosWrapper = new DOSWrapper(false);
             List<Game> games  = dosWrapper.getGames();
 
             request.setAttribute("games", games);
+            request.setAttribute("totalGameNumber", dosWrapper.getFilesNumber());
             request.getRequestDispatcher("/index.jsp").forward(request, response);
 
         } catch (Exception e) {
