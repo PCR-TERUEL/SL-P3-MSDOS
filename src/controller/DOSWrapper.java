@@ -129,10 +129,12 @@ public class DOSWrapper {
         sendKeys(name, true, false);
 
         Game game = verifySearchResult();
-        int id = 0;
+
+        int id = 1;
         while(game != null) {
             game.setId(id);
             gamesResultSearch.add(game);
+            System.out.println("Hey!" + game.toJson());
             game = verifySearchResult();
             id++;
         }
@@ -172,9 +174,10 @@ public class DOSWrapper {
 
     private Game verifySearchResult() throws TesseractException {
         String[] lines = doScreensCapture().split("\n");
-        for (String line : lines) System.out.println(line);
+        for (String line : lines) System.out.println("l" + line);
         if (lines.length > 3) {
             sendKeyEvent(KeyEvent.VK_ENTER);
+            sendKeys("N",true, true);
             sendKeys("N",true, true);
             return null;
         }  else {
