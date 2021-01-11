@@ -5,7 +5,6 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_4_0.xsd"
            version="4.0">
 
-
     <servlet>
         <servlet-name>GetAllGames</servlet-name>
         <servlet-class>dao.GetAllGames</servlet-class>
@@ -14,6 +13,8 @@
         <servlet-name>GetAllGames</servlet-name>
         <url-pattern>/get_all_games</url-pattern>
     </servlet-mapping>
+
+
 
     <servlet>
         <servlet-name>SearchGame</servlet-name>

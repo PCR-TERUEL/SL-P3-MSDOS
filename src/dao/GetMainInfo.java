@@ -1,19 +1,21 @@
 package dao;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controller.DOSWrapper;
-
+import model.Game;
+import java.util.List;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Order extends HttpServlet {
+public class GetMainInfo extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         try {
-            String order = request.getParameter("order");
-            DOSWrapper.order(order);
+            //new DOSWrapper();
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");

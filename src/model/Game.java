@@ -5,20 +5,20 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 public class Game {
-    private int id;
+    private String id;
     private String name;
     private String type;
     private List<String> cassette;
-    private int register;
+    private String register;
 
-    public Game(String name, String type, List<String> cassette, int register) {
+    public Game(String name, String type, List<String> cassette, String register) {
         this.name = name;
         this.type = type;
         this.cassette = cassette;
         this.register = register;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public class Game {
         this.cassette = cassette;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -69,10 +69,10 @@ public class Game {
     }
 
 
-    public int getRegister() {
+    public String getRegister() {
         return register;
     }
-    public void setRegister(int register) {
+    public void setRegister(String register) {
         this.register = register;
     }
 

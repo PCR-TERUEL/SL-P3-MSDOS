@@ -25,8 +25,11 @@ public class GetAllGames extends javax.servlet.http.HttpServlet {
             DOSWrapper dosWrapper = new DOSWrapper(false);
             List<Game> games  = dosWrapper.getGames();
 
+            int totalNumGames = dosWrapper.getFilesNumber();
+
+            dosWrapper.killDOSBox();
             request.setAttribute("games", games);
-            request.setAttribute("total_num_games", dosWrapper.getFilesNumber());
+            request.setAttribute("total_num_games", totalNumGames);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
 
         } catch (Exception e) {

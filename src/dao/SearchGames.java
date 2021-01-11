@@ -14,21 +14,23 @@ public class SearchGames extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
         try {
-            DOSWrapper dosWrapper = new DOSWrapper(false);
             List<Game> gameResult;
 
+            DOSWrapper dosWrapper = new DOSWrapper(false);
+
             String searchInput = request.getParameter("search");
-            System.out.println(searchInput);
             String searchSelector = request.getParameter("searchSelector");
-            System.out.println(searchSelector);
+
             if (searchSelector.equals("name")) {
                 gameResult = dosWrapper.searchByName(searchInput);
             } else {
                 gameResult = dosWrapper.searchByCassette(searchInput);
             }
 
+            dosWrapper.killDOSBox();
+
             request.setAttribute("games", gameResult);
-            request.setAttribute("total_num_games", dosWrapper.nGames);
+            request.setAttribute("total_num_games", dosWrapper.getFilesNumber());
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             request.getRequestDispatcher("/index.jsp").forward(request, response);

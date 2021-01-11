@@ -31,7 +31,7 @@
 <%! int total_num_games = 0; %>
 <div class="card-header">
 	<ul>
-		<li><a href='javascript:document.getGames.submit()'><span>Obtener datos</span></a> </li>
+		<li><a href='/get_all_games'><span>Obtener datos</span></a> </li>
 	</ul>
 </div>
 
